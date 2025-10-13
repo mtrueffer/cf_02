@@ -1,0 +1,37 @@
+import csv
+
+def load_unit_stats(filepath):
+    unit_stats = {}
+    with open(filepath,newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            faction = row["faction"]
+            name = row["name"]
+            if faction not in unit_stats:
+                unit_stats[faction] = {}
+            unit_stats[faction][name] = {
+                "type": row["type"],
+                "speed": float(row["speed"]),
+                "health": int(row["health"]),
+                "damage": int(row["damage"]),
+                "damage_type": row["damage_type"],
+                "attack_rate": float(row["attack_rate"]),
+                "range": int(row["range"]),
+                "armor": int(row["armor"]),
+                "armor_type": row["armor_type"],
+                "spawn_rate": float(row["spawn_rate"])
+            }
+    return unit_stats
+
+def have_same_sign(a, b):
+    return (a >= 0 and b>= 0) or (a < 0 and b < 0)
+
+def distance(A, B):
+    return ((B[0]-A[0])**2 + (B[1]-A[1])**2)**0.5
+
+def norm_dist(A, B):
+    dist = distance(A, B)
+    return list((B[0]-A[0])/dist, (B[1]-A[1])/dist)
+
+def dot_prod(A, B):
+    return A[0]*B[0] + A[1]*B[1]
