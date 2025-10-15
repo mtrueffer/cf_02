@@ -10,13 +10,14 @@ class Unit:
         self.unit_stats = unit_stats[name]
         self.id = len(game.objects["Units"]) + 1
 
-        self.position = [self.game.xylim[0] * team==2,
+        self.position = [0 if self.team==1 else self.game.xylim[0],
             self.game.xylim[1] / 2]
         self.direction = self.point_at()
         self.velocity = self.velocity()
 
         self.cell_index = None
 
+        self.health = self.unit_stats["health"]
         self.vision = 5
 
         self.target = None
@@ -24,30 +25,18 @@ class Unit:
         self.attackedby = None
 
         self.game.logger.log(
-            self.team,
-            f"{self.name} {self.id} of the {self.team} team spawned in!",
-            self.game.tick
+            message=f"{self.name} {self.id} of the {self.team} team spawned in at position ({self.position})!"
         )
 
     def move(self):
         if 0 < self.position + self.speed * self.direction < self.game.length:
             self.position += self.speed * self.direction
-            self.game.logger.log(
-                self.faction,
-                f"{self.name} moves to {self.position} in bin {self.bin_index}",
-                self.game.tick
-            )
         else:
             self.direction *= -1
-            self.game.logger.log(
-                self.faction,
-                f"{self.name} turns around!",
-                self.game.tick
-            )
 
     def point_at(self, x=None, y=None):
         if x == None:
-            x=self.game.xylim[0]*(self.team==1)
+            x=self.game.xylim[0] if self.team==1 else 0
             y=self.game.xylim[1] / 2
         return norm_dist(tuple(self.position),(x, y))
 

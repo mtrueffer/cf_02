@@ -1,5 +1,4 @@
 from .utils import have_same_sign, distance
-
 class SpatialGrid:
     def __init__(self, cell_size=3, logger=None, tick=0):
         self.cell_size = cell_size
@@ -32,14 +31,14 @@ class SpatialGrid:
         cx, cy = self.get_cell_index(unit.position)
         nearby = []
 
-        cell_radius = int(radius // self.cell_size)
+        cell_radius = int(unit.vision // self.cell_size)
 
         for dx in range(-cell_radius, cell_radius+1):
             for dy in range(-cell_radius, cell_radius+1):
                 cell = (cx+dy, cy+dy)
                 if cell in self.cells:
                     for other in self.cells[cell]:
-                        dist = distance(unit.position,other.position)
+                        dist = distance(tuple(unit.position),tuple(other.position))
                         if dist <= radius:
                             nearby.append(other)
         return nearby

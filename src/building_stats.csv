@@ -1,0 +1,2 @@
+faction,name,type,cost,health,damage,damage_type,attack_rate,range,spawn_rate
+Standard,castle,spawner,None,10000,10,magic,1,5,4
