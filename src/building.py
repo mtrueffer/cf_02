@@ -15,7 +15,7 @@ class Building:
         self.cell_index = None
 
         self.unit_spawner = None
-        if self.type = "spawner":
+        if self.type == "spawner":
             self.unit_spawner = UnitSpawner(self.game, self, self.position,
                 self.building_stats["spawn_rate"])
 
@@ -30,7 +30,7 @@ class Building:
         )
 
     def update(self):
-        if self.type = "spawner":
+        if self.type == "spawner":
             self.unit_spawner.update()
 
     def can_see(self, other):

@@ -26,7 +26,7 @@ def load_building_stats(filepath):
     building_stats = {}
     with open(filepath,newline='') as csvfile:
         reader = csv.DictReader(csvfile)
-        for row = reader:
+        for row in reader:
             faction = row["faction"]
             name = row["name"]
             if faction not in building_stats:
