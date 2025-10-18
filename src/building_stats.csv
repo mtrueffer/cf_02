@@ -1,2 +1,5 @@
-faction,name,type,cost,health,damage,damage_type,attack_rate,range,spawn_rate
-Standard,castle,spawner,None,10000,10,magic,1,5,4
+faction,name,type,cost,health,levels,damage,damage_type,attack_rate,range,unit,quantity,spawn_rate
+Standard,Castle,None,None,10000,1,10,magic,1,5,None,None,None
+Human,Farm,spawner,100,2000,1,None,None,None,None,Peasant,2,4
+Human,Barracks,spawner,200;400;800,2000,3,None,None,None,None,Footman;Veteran;Guard,1,5
+Human,Range,spawner,300,2000,1,None,None,None,None,Archer,1,4

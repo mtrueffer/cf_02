@@ -6,7 +6,7 @@ class Spawner:
         self.t0 = time.time() 
 
     def update(self, objects):
-	pass
+	    pass
 
     def add(self, faction_factory="Human", team=None,
             object_type="Unit", name=None):
@@ -29,8 +29,9 @@ class BuildingSpawner(Spawner):
         return objects_upd
 
 class UnitSpawner(Spawner):
-    def __init__(self, game, spawn_position, spawn_interval=4):
+    def __init__(self, game, spawner, spawn_position, spawn_interval=4):
         super().__init__(game)
+        self.spawner = spawner
         self.spawn_position = spawn_position
         self.spawn_interval = spawn_interval
 

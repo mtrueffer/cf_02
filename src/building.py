@@ -2,9 +2,10 @@ from .utils import distance
 from .spawner import UnitSpawner
 
 class Building:
-    def __init__(self, game, team, building_stats, name, position):
+    def __init__(self, game, team, faction, building_stats, name, position):
         self.game = game
         self.team = team
+        self.faction = faction
         self.name = name
         self.building_stats = building_stats[name]
         self.type = self.building_stats["type"]
@@ -15,7 +16,7 @@ class Building:
 
         self.unit_spawner = None
         if self.type = "spawner":
-            self.unit_spawner = UnitSpawner(self.game, self.position,
+            self.unit_spawner = UnitSpawner(self.game, self, self.position,
                 self.building_stats["spawn_rate"])
 
 

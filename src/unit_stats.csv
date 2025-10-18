@@ -1,5 +1,7 @@
-faction,name,type,speed,health,damage,damage_type,attack_rate,range,armor,armor_type,spawn_rate
-Human,Peasant,melee,5,5,1,piercing,2,1,0,unarmored,1.0
-Human,Footman,melee,1,7,2,slashing,1.5,1,1,leather,1.5
-Human,Knight,melee,10,10,2,slashing,1.5,1,2,plate,3
-Human,Archer,ranged,5,5,4,piercing,2,4,0,unarmored,2
+faction,name,type,speed,health,damage,damage_type,attack_rate,range,armor,armor_type
+Human,Peasant,melee,5,5,1,piercing,2,1,0,unarmored
+Human,Footman,melee,2,7,2,slashing,1.5,1,1,leather
+Human,Veteran,melee,2,7,2,slashing,1.5,1,1,heavy
+Human,Guard,melee,2,7,2,slashing,1.5,1,2,heavy
+Human,Knight,melee,10,10,2,slashing,1.5,1,2,heavy
+Human,Archer,ranged,5,5,4,piercing,2,4,0,unarmored

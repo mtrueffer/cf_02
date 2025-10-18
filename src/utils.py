@@ -18,8 +18,7 @@ def load_unit_stats(filepath):
                 "attack_rate": float(row["attack_rate"]),
                 "range": int(row["range"]),
                 "armor": int(row["armor"]),
-                "armor_type": row["armor_type"],
-                "spawn_rate": float(row["spawn_rate"])
+                "armor_type": row["armor_type"]
             }
     return unit_stats
 
@@ -34,12 +33,15 @@ def load_building_stats(filepath):
                 building_stats[faction] = {}
             building_stats[faction][name] = {
                 "type": row["type"],
-                "cost": int(row["cost"]),
+                "cost": tuple(row["cost"].split(';')),
                 "health": int(row["health"]),
+                "levels": int(row["levels"]),
                 "damage": int(row["damage"]),
                 "damage_type": row["damage_type"],
                 "attack_rate": float(row["attack_type"]),
                 "range": int(row["range"]),
+                "unit": tuple(row["unit"].split(';')),
+                "quality": int(row["quality"]),
                 "spawn_rate": float(row["spawn_rate"])
             }
     return building_stats
