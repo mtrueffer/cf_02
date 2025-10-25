@@ -1,16 +1,17 @@
 import time
 
 # Includes
-from .utils import load_unit_stats
-from .spawner import Spawner
+from .utils import load_unit_stats, load_building_stats
+from .spawner import Spawner, UnitSpawner, BuildingSpawner
 from .logger import Logger
 from .spatial_grid import SpatialGrid
 from .faction_factory import FactionFactory, HumanFactory
 from .unit_factory import UnitFactory
+from .building_factory import BuildingFactory
 
 class Game:
-    def __init__(self, xylim=(20,10), ticks=20, tick_time=1, teams=2
-            console_level="info", unit_stats_file="src/unit_stats.csv"
+    def __init__(self, xylim=(20,10), ticks=20, tick_time=1, teams=2,
+            console_level="info", unit_stats_file="src/unit_stats.csv",
             building_stats_file="src/building_stats.csv"):
 
         # Game Parameters
@@ -18,7 +19,7 @@ class Game:
         self.tick_time = tick_time
         self.ticks = ticks
         self.tick = 0
-        self.teams = 2
+        self.teams = teams
         self.unit_stats_file = unit_stats_file
         self.building_stats_file = building_stats_file
 
@@ -32,11 +33,11 @@ class Game:
 
         # Factories
         self.factories = {
-            "Unit": UnitFactory
+            "Unit": UnitFactory,
             "Building": BuildingFactory
         }
         self.faction_factories = {
-            "Standard": FactionFactory
+            "Standard": FactionFactory,
             "Human": HumanFactory
         }
 
@@ -50,6 +51,11 @@ class Game:
         # Spawners
         self.building_spawner = BuildingSpawner(self)
         self.building_spawner.startup(self.objects)
+
+        # Team Assignments
+        self.team_factions = []
+        for team in range(self.teams):
+            self.team_factions.append("Human")
 
     def __str__(self):
         total_units = len(self.objects["Units"])
@@ -85,7 +91,10 @@ class Game:
         self.tick += 1
 
         # Update Objects
-        self.objects = self.spawner.update(self.objects, self.tick)
+        self.objects = self.building_spawner.update(self.objects)
+
+        for building in self.objects["Buildings"]:
+            building.update()
 
         for unit in self.objects["Units"]:
             if unit.is_alive():

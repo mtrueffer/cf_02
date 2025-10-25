@@ -8,6 +8,11 @@ class UnitFactory:
 
         self.unit_stats = game.unit_stats
 
-    def create(self, faction, name):
-        return Unit(self.game, self.team,
-            self.game.unit_stats[faction], name)
+    def create(self, faction, name, position):
+        return Unit(
+            game=self.game,
+            team=self.team,
+            faction=faction,
+            unit_stats=self.game.unit_stats[faction],
+            name=name,
+            position=position)

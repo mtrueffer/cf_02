@@ -5,3 +5,4 @@ from .faction_factory import FactionFactory
 from .logger import Logger
 from .spawner import Spawner
 from .unit_factory import UnitFactory
+from .building_factory import BuildingFactory

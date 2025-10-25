@@ -38,10 +38,10 @@ def load_building_stats(filepath):
                 "levels": int(row["levels"]),
                 "damage": int(row["damage"]),
                 "damage_type": row["damage_type"],
-                "attack_rate": float(row["attack_type"]),
+                "attack_rate": float(row["attack_rate"]),
                 "range": int(row["range"]),
                 "unit": tuple(row["unit"].split(';')),
-                "quality": int(row["quality"]),
+                "quantity": int(row["quantity"]),
                 "spawn_rate": float(row["spawn_rate"])
             }
     return building_stats

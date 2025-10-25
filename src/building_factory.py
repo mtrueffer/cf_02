@@ -7,6 +7,11 @@ class BuildingFactory:
 
         self.building_stats = game.building_stats
 
-    def create(self, faction, name):
-        return Building(self.game, self.team,
-            self.game.building_stats[faction], name)
+    def create(self, faction, name, position):
+        return Building(
+            game=self.game,
+            team=self.team,
+            faction=faction,
+            building_stats=self.game.building_stats[faction],
+            name=name,
+            position=position)

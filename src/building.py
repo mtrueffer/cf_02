@@ -14,7 +14,9 @@ class Building:
         self.position = position
         self.cell_index = None
 
+        self.level = 1
         self.unit_spawner = None
+        self.unit_name = self.building_stats["unit"][self.level-1]
         if self.type == "spawner":
             self.unit_spawner = UnitSpawner(self.game, self, self.position,
                 self.building_stats["spawn_rate"])
@@ -31,7 +33,7 @@ class Building:
 
     def update(self):
         if self.type == "spawner":
-            self.unit_spawner.update()
+           self.game.objects = self.unit_spawner.update(self.game.objects)
 
     def can_see(self, other):
         dist = distance(self.position, other.position)
@@ -41,3 +43,8 @@ class Building:
 
     def is_alive(self):
         return self.health > 0
+
+    def upgrade(self):
+        if self.levels < self.building_stats["levels"]:
+            self.level += 1
+            self.unit_name = self.building_stats["unit"][self.level]
