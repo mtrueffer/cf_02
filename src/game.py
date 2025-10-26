@@ -87,6 +87,7 @@ class Game:
             while self.tick < self.ticks:
                 self.update()
                 self.battlefield.update_layout()
+                self.battlefield.add_console_message(f"Tick {self.tick} complete.")
                 time.sleep(self.tick_time)
                 self.tick += 1
 
