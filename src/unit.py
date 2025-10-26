@@ -32,6 +32,10 @@ class Unit:
         self.direction = self.point_at()
         self.speed_vect = self.velocity()
         self.position = self.move()
+        
+        self.game.logger.log(
+            message=f"{self.name} {self.id} on the {self.team} team moved to {tuple(round(axis,2) for axis in self.position)}",
+            )
 
     def move(self):
         return self.position[0]+self.speed_vect[0], self.position[1]+self.speed_vect[1]

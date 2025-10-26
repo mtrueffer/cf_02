@@ -8,10 +8,12 @@ from .spatial_grid import SpatialGrid
 from .faction_factory import FactionFactory, HumanFactory
 from .unit_factory import UnitFactory
 from .building_factory import BuildingFactory
+from .battlefield import Battlefield
+from rich.live import Live
 
 class Game:
-    def __init__(self, xylim=(20,10), ticks=20, tick_time=1, teams=2,
-            console_level="info", unit_stats_file="src/unit_stats.csv",
+    def __init__(self, xylim=(50,30), ticks=100, tick_time=1, teams=2,
+            console_level="system", unit_stats_file="src/unit_stats.csv",
             building_stats_file="src/building_stats.csv"):
 
         # Game Parameters
@@ -22,6 +24,7 @@ class Game:
         self.teams = teams
         self.unit_stats_file = unit_stats_file
         self.building_stats_file = building_stats_file
+        self.battlefield = Battlefield(self)
 
         # Data Files
         self.unit_stats = load_unit_stats(self.unit_stats_file)
@@ -79,16 +82,18 @@ class Game:
     # Main Game Loop
     #---------
     def run(self):
-        for _ in range(self.ticks):
-            self.logger.log(message=self)
-            self.update()
-            time.sleep(self.tick_time)
+        with Live(self.battlefield.layout, refresh_per_second=10,
+            screen=True):
+            while self.tick < self.ticks:
+                self.update()
+                self.battlefield.update_layout()
+                time.sleep(self.tick_time)
+                self.tick += 1
 
     #---------
     # Game Updates
     #---------
     def update(self):
-        self.tick += 1
 
         # Update Objects
         self.objects = self.building_spawner.update(self.objects)
@@ -100,6 +105,7 @@ class Game:
             if unit.is_alive():
                 nearby_objects = {"Units": [], "Buildings": []}
                 nearby_objects = self.grid.nearby(unit)
+                unit.update()
                 # Unit Decision Tree
                 # 1. Has target unit and still targetable?
                     # if in attack range, attack

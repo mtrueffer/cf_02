@@ -21,6 +21,7 @@ class Building:
             self.unit_spawner = UnitSpawner(self.game, self, self.position,
                 self.building_stats["spawn_rate"])
 
+        self.size = (1,1)
 
         self.health = self.building_stats["health"]
         self.vision = 5

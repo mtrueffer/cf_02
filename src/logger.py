@@ -61,7 +61,7 @@ class Logger:
         except Exception as e:
             print(f"Logger Error: Unable to write to file ({e})")
 
-        #Out of console
+        #Out to console
         if self.LEVELS.index(level) >= self.LEVELS.index(self.console_level):
             faction_color = self.faction_colors.get(faction.lower(), Fore.WHITE) if self.enable_color else ""
             level_color = self.level_colors.get(level.lower(), Fore.WHITE) if self.enable_color else ""
