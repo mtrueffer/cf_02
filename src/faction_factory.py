@@ -1,5 +1,6 @@
 from .unit_factory import UnitFactory
 from .building_factory import BuildingFactory
+from .building import Castle
 
 class FactionFactory():
     def __init__(self, game, team, name):
@@ -10,7 +11,7 @@ class FactionFactory():
     def create(self, object_type, position):
         factory_type = self.game.factories[object_type]
         factory = factory_type(self.game, self.team)
-        return factory.create("Standard", self.name, position)
+        return factory.create("Standard", self.name, position, Castle)
 
 class HumanFactory(FactionFactory):
     def __init__(self, game, team, name):

@@ -1,5 +1,5 @@
-faction,name,type,cost,health,levels,damage,damage_type,attack_rate,range,unit,quantity,spawn_rate
-Standard,Castle,None,None,10000,1,10,magic,1,5,None,0,0
-Human,Farm,spawner,100,2000,1,0,None,0,0,Peasant,2,4
-Human,Barracks,spawner,200;400;800,2000,3,0,None,0,0,Footman;Veteran;Guard,1,5
-Human,Range,spawner,300,2000,1,0,None,0,0,Archer,1,4
+faction,name,type,cost,health,levels,damage,damage_type,attack_rate,range,unit,quantity,spawn_rate,symbol
+Standard,Castle,None,None,10000,1,10,magic,1,5,None,0,0,\U0001F3F0
+Human,Farm,spawner,100,2000,1,0,None,0,0,Peasant,2,4,\U0001F6D6
+Human,Barracks,spawner,200;400;800,2000,3,0,None,0,0,Footman;Veteran;Guard,1,5,\U001F9F1
+Human,Range,spawner,300,2000,1,0,None,0,0,Archer,1,4,\U0001F3AF

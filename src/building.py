@@ -22,6 +22,7 @@ class Building:
                 self.building_stats["spawn_rate"])
 
         self.size = (1,1)
+        self.symbol = self.building_stats["symbol"]
 
         self.health = self.building_stats["health"]
         self.vision = 5
@@ -49,3 +50,9 @@ class Building:
         if self.levels < self.building_stats["levels"]:
             self.level += 1
             self.unit_name = self.building_stats["unit"][self.level]
+
+class Castle(Building):
+    def __init__(self, game, team, faction, building_stats, name, position):
+        super().__init__(game, team, faction, building_stats,
+            name, position)
+

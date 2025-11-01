@@ -1,0 +1,25 @@
+#left{
+    width: 25%;
+    border: solid cyan;
+    padding: 1;
+}
+
+#main{
+    width: 75%;
+    border: solid green;
+}
+
+#battlefield{
+    height: 75%;
+    border: solid yellow;
+}
+
+#console{
+    height: 15%;
+    border: solid magenta;
+    overflow: hidden;
+}
+
+#input{
+    height: 1fr;
+}

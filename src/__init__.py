@@ -7,3 +7,4 @@ from .spawner import Spawner
 from .unit_factory import UnitFactory
 from .building_factory import BuildingFactory
 from .battlefield import Battlefield
+from .command_handler import CommandHandler

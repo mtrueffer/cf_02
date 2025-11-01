@@ -1,82 +1,128 @@
-import asyncio
-from rich.console import Console
-from rich.layout import Layout
-from rich.panel import Panel
-from rich.table import Table
-from rich.live import Live
-from rich.text import Text
-from shutil import get_terminal_size
+from textual.app import App, ComposeResult
+from textual.containers import Container, Horizontal, Vertical
+from textual.widgets import Static, Input, Header, Footer
+from textual.reactive import reactive
+from textual import events
+import asyncio, time, wcwidth
 
-class Battlefield:
+class Battlefield(App):
+
+    CSS_PATH = "battlefield.css"
+    BINDINGS = [("q", "quit", "Quit")]
+
+    tick = reactive(0)
+    runtime = reactive(0.0)
+    command_history = reactive(list, always_update=True)
+    current_input = reactive("")
+    objects = reactive(dict)
+
     def __init__(self, game):
+        super().__init__()
         self.game = game
-        self.console = Console()
-        self.layout = self._create_layout()
-        self.console_lines = []
+        self.start_time = time.time()
+        self.command_history = []
 
-    def _create_layout(self):
-        layout = Layout(name="root")
+    def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
+        with Horizontal():
+            with Vertical(id='left'):
+                yield Static("",id="stats")
+            with Vertical(id='main'):
+                yield Static("", id="battlefield")
+                yield Static("", id="console")
+                yield Input(placeholder="Type command...", id="input")
+        yield Footer()
 
-        layout.split(
-            Layout(name="upper", ratio=3),
-            Layout(name="console", ratio=1)
-        )
+    async def on_mount(self):
+        self.set_interval(self.game.tick_time, self.update_game)
 
-        layout["upper"].split_row(
-            Layout(name="battlefield",ratio=3),
-            Layout(name="info", ratio=1)
-        )
+    def update_game(self):
+        self.game.update()
+        self.tick += 1
+        self.runtime = time.time() - self.start_time
+        self.refresh_ui()
 
-        return layout
-
-    def render_battlefield(self):
-        width, height = self.game.xylim
+    def _battlefield(self):
+        width,height = self.game.xylim
         grid = [[" " for _ in range(width)] for _ in range(height)]
 
-        # Buildings
-        for b in self.game.objects["Buildings"]:
-            bx, by = map(int, b.position)
-            bw, bh = b.size
-            for y in range(by, by+bh):
-                for x in range(bx, bx+bw):
-                    if 0 <= x < width and 0 <= y < height:
-                        grid[y][x] = "█"
+        for x in range(width):
+            grid[0][x] = "\u2501"
+            grid[height - 1][x] = "\u2501"
 
-        # Units
-        for u in self.game.objects["Units"]:
-            x,y = map(int, u.position)
-            if 0 <= x < width and 0 <= y < height:
-                team_colour = "[red]" if u.team == 1 else "[blue]"
-                grid[y][x] = f"{team_colour}U[/]"
+        for y in range(height):
+            grid[y][0] = "\u2503"
+            grid[y][width - 1] = "\u2503"
 
-        battlefield_str = "\n".join("".join(row) for row in grid)
-        return Panel(battlefield_str, title="Battlefield",
-            border_style="green")
+        grid[0][0] = "\u250F"
+        grid[0][width - 1] = "\u2513"
+        grid[height - 1][0] = "\u2517"
+        grid[height - 1][width - 1] = "\u251B"
 
-    def render_info(self):
-        table = Table(title="Game Info")
-        table.add_column("Stat", justify="right",
-            style="cyan", no_wrap=True)
-        table.add_column("Value", style="magenta")
+        for unit in self.game.objects.get("Units", []):
+            x,y = map(int, unit.position)
+            x = max(0, min(width - 1, x))
+            y = max(0, min(height - 1, y))
+            symbol = self.decode_unicode(unit.symbol) if hasattr(unit, "symbol") else "?"
+            grid[y][x] = symbol
 
-        table.add_row("Tick", str(self.game.tick))
-        table.add_row("Total Units", str(len(self.game.objects["Units"])))
-        table.add_row("Total Buildings", str(len(self.game.objects["Buildings"])))
+        for building in self.game.objects.get("Buildings", []):
+            x,y = map(int, building.position)
+            symbol = self.decode_unicode(building.symbol) if hasattr(building, "symbol") else "#"
+            grid[y][x] = symbol
 
-        return Panel(table, border_style="yellow")
+        return "\n".join("".join(self.fix_width(cell) for cell in row) for row in grid)
 
-    def render_console_panel(self):
-        terminal_height = get_terminal_size((80, 24)).lines
-        console_height = int(terminal_height * 0.25) - 4
+    def refresh_ui(self):
+        if not self.is_running:
+            return
 
-        console_text = "\n".join(self.console_lines[-console_height:])
-        return Panel(console_text, title="Command Console", border_style="magenta")
+        battlefield = self._battlefield()
 
-    def update_layout(self):
-        self.layout["battlefield"].update(self.render_battlefield())
-        self.layout["info"].update(self.render_info())
-        self.layout["console"].update(self.render_console_panel())
-        return self.layout
+        self.query_one("#battlefield", Static).update(battlefield)
 
-    def add_console_message(self, text):
-        self.console_lines.append(text)
+        stats = (
+            f"[bold green]Tick:[/bold green] {self.tick}\n"
+            f"[bold green]Runtime:[/bold green] {self.runtime:,.1f}s\n"
+            f"[bold green]Units:[/bold green] {len(self.game.objects.get('Units', []))}\n"
+            f"[bold green]Buildings:[/bold green] {len(self.game.objects.get('Buildings', []))}\n"
+        )
+        self.query_one("#stats", Static).update(stats)
+
+        console_text = "\n".join(self.command_history[-6:]) or "[dim]No commands...[/dim]"
+        self.query_one("#console", Static).update(console_text)
+
+    async def on_input_submitted(self, event: Input.Submitted):
+        cmd = event.value.strip()
+        event.input.value = ""
+        if not cmd:
+            return
+        if cmd.lower() in {"quit", "exit"}:
+            await self.action_quit()
+            return
+        self.command_history.append(f"> {cmd}")
+        await self.game.command_handler.handle(cmd)
+        self.refresh_ui()
+
+    async def on_key(self, event: events.Key):
+        if event.key == "escape":
+            await self.action_quit()
+
+    def log_command(self, msg: str):
+        print(f"[LOG] {msg}")
+        self.command_history.append(msg)
+        self.call_after_refresh(self.refresh_ui)
+
+    def decode_unicode(self, s: str) -> str:
+        try:
+            return s.encode("utf-8").decode("unicode_escape")
+        except Exception:
+            return s
+
+    def fix_width(self,ch, width=2):
+        w = wcwidth.wcwidth(ch)
+        if w < width:
+            return ch + " " * (width - w)
+        elif w > width:
+            return ch[:width]
+        return ch

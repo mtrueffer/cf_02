@@ -42,7 +42,8 @@ def load_building_stats(filepath):
                 "range": int(row["range"]),
                 "unit": tuple(row["unit"].split(';')),
                 "quantity": int(row["quantity"]),
-                "spawn_rate": float(row["spawn_rate"])
+                "spawn_rate": float(row["spawn_rate"]),
+                "symbol": row["symbol"]
             }
     return building_stats
 

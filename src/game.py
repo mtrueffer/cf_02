@@ -9,10 +9,12 @@ from .faction_factory import FactionFactory, HumanFactory
 from .unit_factory import UnitFactory
 from .building_factory import BuildingFactory
 from .battlefield import Battlefield
-from rich.live import Live
+from .command_handler import CommandHandler
+from .io_manager import IOManager
+import asyncio
 
 class Game:
-    def __init__(self, xylim=(50,30), ticks=100, tick_time=1, teams=2,
+    def __init__(self, xylim=(30,20), ticks=100, tick_time=1, teams=2,
             console_level="system", unit_stats_file="src/unit_stats.csv",
             building_stats_file="src/building_stats.csv"):
 
@@ -24,7 +26,11 @@ class Game:
         self.teams = teams
         self.unit_stats_file = unit_stats_file
         self.building_stats_file = building_stats_file
-        self.battlefield = Battlefield(self)
+        self.battlefield = None
+        self.command_handler = CommandHandler(self)
+        self.io = IOManager(self)
+        self.running = True
+        self.paused = False
 
         # Data Files
         self.unit_stats = load_unit_stats(self.unit_stats_file)
@@ -81,20 +87,14 @@ class Game:
     #----------
     # Main Game Loop
     #---------
-    def run(self):
-        with Live(self.battlefield.layout, refresh_per_second=10,
-            screen=True):
-            while self.tick < self.ticks:
-                self.update()
-                self.battlefield.update_layout()
-                self.battlefield.add_console_message(f"Tick {self.tick} complete.")
-                time.sleep(self.tick_time)
-                self.tick += 1
+    async def run(self):
+        await self.io.run()
 
     #---------
     # Game Updates
     #---------
     def update(self):
+        self.tick += 1
 
         # Update Objects
         self.objects = self.building_spawner.update(self.objects)
@@ -127,3 +127,4 @@ class Game:
                 # 6. If not on center of lane
                     # Move to center of lane
                 # 7. Move down lane towards enemy side
+
