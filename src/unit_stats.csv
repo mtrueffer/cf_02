@@ -1,7 +1,7 @@
-faction,name,type,speed,health,damage,damage_type,attack_rate,range,armor,armor_type
-Human,Peasant,melee,0.5,5,1,piercing,2,1,0,unarmored
-Human,Footman,melee,0.5,7,2,slashing,1.5,1,1,leather
-Human,Veteran,melee,0.5,7,2,slashing,1.5,1,1,heavy
-Human,Guard,melee,0.5,7,2,slashing,1.5,1,2,heavy
-Human,Knight,melee,0.75,10,2,slashing,1.5,1,2,heavy
-Human,Archer,ranged,0.5,5,4,piercing,2,4,0,unarmored
+faction,name,type,speed,health,damage,damage_type,attack_rate,range,armor,armor_type,symbol
+Human,Peasant,melee,0.5,5,1,piercing,2,1,0,unarmored,\u2659
+Human,Footman,melee,0.5,7,2,slashing,1.5,1,1,leather,\u2657
+Human,Veteran,melee,0.5,7,2,slashing,1.5,1,1,heavy,\u2657
+Human,Guard,melee,0.5,7,2,slashing,1.5,1,2,heavy,\u2657
+Human,Knight,melee,0.75,10,2,slashing,1.5,1,2,heavy,\u2657
+Human,Archer,ranged,0.5,5,4,piercing,2,4,0,unarmored,\u2657

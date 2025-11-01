@@ -18,7 +18,8 @@ def load_unit_stats(filepath):
                 "attack_rate": float(row["attack_rate"]),
                 "range": int(row["range"]),
                 "armor": int(row["armor"]),
-                "armor_type": row["armor_type"]
+                "armor_type": row["armor_type"],
+                "symbol": row["symbol"]
             }
     return unit_stats
 

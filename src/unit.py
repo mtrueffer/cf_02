@@ -18,6 +18,7 @@ class Unit:
 
         self.health = self.unit_stats["health"]
         self.vision = 5
+        self.symbol = self.unit_stats["symbol"]
 
         self.target = None
 

@@ -71,7 +71,7 @@ class Battlefield(App):
             symbol = self.decode_unicode(building.symbol) if hasattr(building, "symbol") else "#"
             grid[y][x] = symbol
 
-        return "\n".join("".join(self.fix_width(cell) for cell in row) for row in grid)
+        return "\n".join("".join(self.fix_width(cell, width=1) for cell in row) for row in grid)
 
     def refresh_ui(self):
         if not self.is_running:

@@ -1,5 +1,4 @@
-
-import time
+import time, math, random
 
 class Spawner:
     def __init__(self, game):
@@ -37,18 +36,50 @@ class BuildingSpawner(Spawner):
 
     def startup(self, objects):
         objects_upd = objects
+
+        castle_positions = self.generate_edge_far_positions(
+            *self.game.xylim, n_castles=self.game.teams)
+
         for team in range(self.game.teams):
-            if team == 0:
-                xy = (2,5)
-            else:
-                xy = (self.game.xylim[0]-2,5)
-            objects_upd["Buildings"].append(self.add(
-                faction_factory="Standard",
-                team=team,
-                object_type="Building",
-                name="Castle",
-                position = xy))
+            objects_upd["Buildings"].append(
+                self.add(
+                    faction_factory="Standard",
+                    team=team,
+                    object_type="Building",
+                    name="Castle",
+                    position=castle_positions[team]
+                )
+            )
+
         return objects_upd
+
+    def distance(self, a, b):
+        return math.hypot(a[0] - b[0], a[1] - b[1])
+
+    def generate_edge_far_positions(self, width, height, n_castles, edge_band=3):
+        candidates = []
+        for x in range(width):
+            for y in range(height):
+                if (x < edge_band or x >= width - edge_band or 
+                        y < edge_band or y >= height - edge_band):
+                    candidates.append((x, y))
+
+        if not candidates:
+            raise ValueError("Edge band too thick for battlefield size")
+
+        positions = [random.choice(candidates)]
+
+        for _ in range(1, n_castles):
+            best_spot, best_min_dist= None, -1
+            for c in candidates:
+                min_d = min(self.distance(c, p) for p in positions)
+                if min_d > best_min_dist:
+                    best_min_dist = min_d
+                    best_spot = c
+            positions.append(best_spot)
+            candidates.remove(best_spot)
+
+        return positions
 
 class UnitSpawner(Spawner):
     def __init__(self, game, spawner, spawn_position, spawn_interval=4):
@@ -69,7 +100,4 @@ class UnitSpawner(Spawner):
                 position=self.spawn_position))
             self.t0 = time.time()
         return objects_upd
-
-        
-
 
