@@ -9,4 +9,5 @@ class IOManager:
     async def run(self):
         app = Battlefield(self.game)
         self.game.battlefield = app
+        self.game.building_spawner.startup(self.game.objects)
         await app.run_async()

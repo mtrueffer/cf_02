@@ -8,8 +8,7 @@ class Spawner:
     def update(self, objects):
 	    pass
 
-    def add(self, faction_factory="Human", team=None,
-            object_type="Unit", name=None, position=(1,1)):
+    def add(self, faction_factory="Human", team=None, object_type="Unit", name=None, position=(1,1)):
         factory_class = self.game.faction_factories[faction_factory]
         factory = factory_class(self.game, team, name)
         return factory.create(object_type, position)
@@ -20,18 +19,16 @@ class BuildingSpawner(Spawner):
 
     def update(self, objects):
         objects_upd = objects
-        if self.game.tick == 10:
-            for team in range(self.game.teams):
-                if team == 0:
-                    xy = (1,8)
-                else:
-                    xy = (self.game.xylim[0]-1,2)
-                objects_upd["Buildings"].append(self.add(
-                    faction_factory=self.game.team_factions[team],
-                    team=team,
-                    object_type="Building",
-                    name="Farm",
-                    position=xy))
+        return objects_upd
+
+    def spawn(self, objects, team, name, x, y):
+        objects_upd = objects
+        objects_upd["Buildings"].append(self.add(
+            faction_factory=self.game.team_factions[team],
+            team=team,
+            object_type="Building",
+            name=name,
+            position=(x,y)))
         return objects_upd
 
     def startup(self, objects):
@@ -60,10 +57,10 @@ class BuildingSpawner(Spawner):
         candidates = []
         for x in range(width):
             for y in range(height):
-                if ((x < edge_band and x >= min_from_wall)
-                    or (x >= width - edge_band and x < width - min_from_wall)
-                    or (y < edge_band and y >= min_from_wall)
-                    or (y >= height - edge_band and y < height - min_from_wall)):
+                if (((x < edge_band and x >= min_from_wall)
+                    or (x >= width - edge_band and x < width - min_from_wall))
+                    and ((y < edge_band and y >= min_from_wall)
+                    or (y >= height - edge_band and y < height - min_from_wall))):
                         candidates.append((x, y))
 
         if not candidates:

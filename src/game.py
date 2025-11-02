@@ -6,15 +6,14 @@ from .spawner import Spawner, UnitSpawner, BuildingSpawner
 from .logger import Logger
 from .spatial_grid import SpatialGrid
 from .faction_factory import FactionFactory, HumanFactory
-from .unit_factory import UnitFactory
-from .building_factory import BuildingFactory
+from .factory import BuildingFactory, UnitFactory
 from .battlefield import Battlefield
 from .command_handler import CommandHandler
 from .io_manager import IOManager
 import asyncio
 
 class Game:
-    def __init__(self, xylim=(100,35), ticks=100, tick_time=1, teams=2,
+    def __init__(self, xylim=(90,33), ticks=100, tick_time=1, teams=2,
             console_level="system", unit_stats_file="src/unit_stats.csv",
             building_stats_file="src/building_stats.csv"):
 
@@ -59,7 +58,6 @@ class Game:
 
         # Spawners
         self.building_spawner = BuildingSpawner(self)
-        self.building_spawner.startup(self.objects)
 
         # Team Assignments
         self.team_factions = []
