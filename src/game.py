@@ -14,7 +14,7 @@ from .io_manager import IOManager
 import asyncio
 
 class Game:
-    def __init__(self, xylim=(30,20), ticks=100, tick_time=1, teams=3,
+    def __init__(self, xylim=(100,35), ticks=100, tick_time=1, teams=2,
             console_level="system", unit_stats_file="src/unit_stats.csv",
             building_stats_file="src/building_stats.csv"):
 

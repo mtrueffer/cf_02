@@ -1,17 +1,16 @@
 #left{
-    width: 25%;
+    width: 35%;
     border: solid cyan;
     padding: 1;
 }
 
 #main{
-    width: 75%;
+    width: 65%;
     border: solid green;
 }
 
 #battlefield{
-    height: 75%;
-    border: solid yellow;
+    height: 100%;
 }
 
 #console{

@@ -27,10 +27,10 @@ class Battlefield(App):
         with Horizontal():
             with Vertical(id='left'):
                 yield Static("",id="stats")
+                yield Static("",id="console")
+                yield Input(placeholder="Type command...",id="input")
             with Vertical(id='main'):
                 yield Static("", id="battlefield")
-                yield Static("", id="console")
-                yield Input(placeholder="Type command...", id="input")
         yield Footer()
 
     async def on_mount(self):

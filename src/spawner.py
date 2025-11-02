@@ -56,13 +56,15 @@ class BuildingSpawner(Spawner):
     def distance(self, a, b):
         return math.hypot(a[0] - b[0], a[1] - b[1])
 
-    def generate_edge_far_positions(self, width, height, n_castles, edge_band=3):
+    def generate_edge_far_positions(self, width, height, n_castles, edge_band=5, min_from_wall=2):
         candidates = []
         for x in range(width):
             for y in range(height):
-                if (x < edge_band or x >= width - edge_band or 
-                        y < edge_band or y >= height - edge_band):
-                    candidates.append((x, y))
+                if ((x < edge_band and x >= min_from_wall)
+                    or (x >= width - edge_band and x < width - min_from_wall)
+                    or (y < edge_band and y >= min_from_wall)
+                    or (y >= height - edge_band and y < height - min_from_wall)):
+                        candidates.append((x, y))
 
         if not candidates:
             raise ValueError("Edge band too thick for battlefield size")
