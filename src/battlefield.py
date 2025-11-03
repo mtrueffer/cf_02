@@ -44,7 +44,7 @@ class Battlefield(App):
 
     def _battlefield(self):
         width,height = self.game.xylim
-        grid = [["." for _ in range(width)] for _ in range(height)]
+        grid = [[" " for _ in range(width)] for _ in range(height)]
 
         for x in range(width):
             grid[0][x] = "\u2501"
@@ -59,25 +59,15 @@ class Battlefield(App):
         grid[height - 1][0] = "\u2517"
         grid[height - 1][width - 1] = "\u251B"
 
-        team_colors = {
-            1: "red",
-            2: "blue",
-            3: "green",
-            4: "yellow"}
-
         for unit in self.game.objects.get("Units", []):
             x,y = map(int, unit.position)
             x = max(0, min(width - 1, x))
             y = max(0, min(height - 1, y))
-            color = team_colors.get(unit.team+1)
-            symbol = self.decode_unicode(unit.symbol) if hasattr(unit, "symbol") else "?"
-            grid[y][x] = f"[{color}]" + symbol + f"[/{color}]"
+            grid[y][x] = self.decode_unicode(unit.colored_symbol())
 
         for building in self.game.objects.get("Buildings", []):
             x,y = map(int, building.position)
-            color = team_colors.get(building.team+1)
-            symbol = self.decode_unicode(building.symbol) if hasattr(building, "symbol") else "#"
-            grid[y][x] = f"[{color}]" + symbol + f"[/{color}]"
+            grid[y][x] = self.decode_unicode(building.colored_symbol())
 
         hund_row = "    " + "".join(f"{x//100 if x>= 100 else ' '}" for x in range(width))
         tens_row = "    " + "".join(f"{x//10 if x>= 10 else ' '}" for x in range(width))

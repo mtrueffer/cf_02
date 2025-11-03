@@ -102,9 +102,11 @@ class Game:
 
         for unit in self.objects["Units"]:
             if unit.is_alive():
-                nearby_objects = {"Units": [], "Buildings": []}
-                nearby_objects = self.grid.nearby(unit)
+                #nearby_objects = {"Units": [], "Buildings": []}
+                #nearby_objects = self.grid.nearby(unit)
                 unit.update()
+
+        self.objects["Units"] = [u for u in self.objects["Units"] if not getattr(u, "is_dead", False)]
                 # Unit Decision Tree
                 # 1. Has target unit and still targetable?
                     # if in attack range, attack

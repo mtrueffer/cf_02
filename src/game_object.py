@@ -18,6 +18,7 @@ class GameObject:
 
         self.symbol = self.stats["symbol"]
         self.health = self.stats["health"]
+        self.is_dead = False
         self.vision = 5
 
         self.target = None
@@ -35,11 +36,26 @@ class GameObject:
     def is_alive(self):
         return self.health > 0
 
+    def can_see(self, object):
+        pass
+
+    def update(self):
+        pass
+
+    def find_target(self, object_type):
+        visible_objects = [
+            o for o in self.game.objects[object_type]
+            if o.team != self.team and self.can_see(o)]
+        if not visible_objects:
+            return None
+        visible_objects.sort(key=lambda o: distance(self.position, o.position))
+        return visible_objects[0]
+
 @register_class
 class Building(GameObject):
     def __init__(self, game, team, faction, stats, name, position):
         super().__init__(game, team, faction, stats, name, position)
-        
+
         self.type = self.stats["type"]
         self.id = len(game.objects["Buildings"]) + 1
 
@@ -76,21 +92,36 @@ class Castle(Building):
 class Unit(GameObject):
     def __init__(self, game, team, faction, stats, name, position):
         super().__init__(game, team, faction, stats, name, position)
-        
+
         self.id = len(game.objects["Units"]) + 1
 
         self.direction = self.point_at()
         self.speed_vect = self.velocity()
 
     def update(self):
-        #If moving:
-        self.direction = self.point_at()
-        self.speed_vect = self.velocity()
-        self.position = self.move()
-        
-        self.game.logger.log(
-            message=f"{self.name} {self.id} on the {self.team} team moved to {tuple(round(axis,2) for axis in self.position)}",
-            )
+        if not self.target:
+            self.target = self.find_target("Units")
+            if not self.target:
+                self.target = self.find_target("Buildings")
+        if self.target:
+            self.direction = self.point_at(*self.target.position)
+            self.speed_vect = self.velocity()
+            if distance(self.position, self.target.position) <= self.stats["range"]:
+                self.attack()
+            else:
+                self.position = self.move()
+        else:
+            self.direction = self.point_at()
+            self.speed_vect = self.velocity()
+            self.position = self.move()
+
+    def attack(self):
+        damage = self.stats.get("damage", 1)
+        self.target.health -= damage
+
+        if self.target.health <= 0:
+            self.target.health = 0
+            self.target.is_dead = True
 
     def move(self):
         return self.position[0]+self.speed_vect[0], self.position[1]+self.speed_vect[1]

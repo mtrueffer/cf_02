@@ -26,7 +26,7 @@ class CommandHandler:
             self.game.battlefield.log_command(f"[red]Invalid team number:[/red] {team_str}")
             return
 
-        if team not in range(1, self.game.teams):
+        if team not in range(self.game.teams+1):
             self.game.battlefield.log_command(f"[red]Team {team} does not exist.[/red]")
             return
 
